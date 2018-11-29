@@ -8,28 +8,37 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Collection;
 
+/**
+ * @author neron.liu
+ */
 @Slf4j
 @RestController
-public class AudienceController {
+public class AudienceController extends BaseController {
 
     @Autowired
     private AudienceService audienceService;
 
     @GetMapping("/audiences")
     @ResponseBody
-    public ResponseDto<List<AudienceDto>> getOnlineAudiences(
+    public ResponseDto<Collection<String>> getOnlineAudiences(
             @RequestParam(name = "online_only", defaultValue = "false") boolean onlineOnly) {
+        return handle(() -> audienceService.getAll());
+    }
 
-        return ResponseDto.success(audienceService.getAll());
+    @PostMapping("/audience/join")
+    @ResponseBody
+    public ResponseDto<AudienceDto> join(@RequestBody AudienceDto dto) {
+        return handle(()->audienceService.join(dto));
     }
 
     @GetMapping("/audience/{audienceId}")
     @ResponseBody
     public ResponseDto<AudienceDto> getAudienceById(
             @PathVariable(name = "audienceId") int id) {
-        return null;
+        throw new RuntimeException();
+//        return null;
     }
 
     @PostMapping("/audience/{audienceId}")
